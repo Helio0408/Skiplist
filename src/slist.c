@@ -111,6 +111,11 @@ void alteracao(lista *l, char palavra[], char def[]){
 	
 	temp = busca(l, palavra);
 
+	if(temp == NULL){
+		printf("OPERACAO INVALIDA\r\n");
+		return;
+	}
+
 	if(temp->def != NULL)
 		free(temp->def);
 
@@ -120,7 +125,7 @@ void alteracao(lista *l, char palavra[], char def[]){
 
 void remocao(lista *l, char palavra[]){
 	if(busca(l, palavra) == NULL){
-		printf("OPERACAO INVALIDA\n");
+		printf("OPERACAO INVALIDA\r\n");
 		return;
 	}
 
@@ -151,7 +156,7 @@ void remocao(lista *l, char palavra[]){
 
 	while(l->max_nvl != 0 && l->upleft->prox == NULL){
 		p = l->upleft;
-		l->upleft = l->upleft->baixo;
+		if(l->upleft->baixo != NULL) l->upleft = l->upleft->baixo;
 		l->max_nvl--;
 		liberar_no(p);
 	}
@@ -180,7 +185,7 @@ void busca_definicao(lista* l, char palavra[]){
 	no* res = busca(l, palavra);
 
 	if(res == NULL){
-		printf("OPERACAO INVALIDA\n");
+		printf("OPERACAO INVALIDA\r\n");
 		return;
 	}
 
