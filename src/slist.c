@@ -59,7 +59,6 @@ void insercao(lista *l, char palavra[], char def[]){
 	for(int i = 0; i < num_niveis; i++) update[i] = NULL;
 
 	int nvl_novo = random_nvl();
-	nvl_novo = 0;
 
 	for(int i = l->max_nvl; i >= 0; i--){
 		while(atual->prox != NULL && strcmp(atual->prox->verbete, palavra) < 0){
@@ -125,7 +124,7 @@ void remocao(lista *l, char palavra[]){
 		return;
 	}
 
-	no *update[num_niveis], *atual = l->upleft, *old_atual = l->upleft, *p;
+	no *update[num_niveis], *atual = l->upleft, *p;
 	int curr_level = 0;
 
 	for(int i = 0; i < num_niveis; i++) update[i] = NULL;
@@ -189,11 +188,11 @@ void busca_definicao(lista* l, char palavra[]){
 }
 
 void impressao(lista *l, char inic){
-	/*
 	no *atual = l->upleft;
+	char palavra[2] = {inic, '\0'};
 
 	for(int i = l->max_nvl; i >= 0; i--){
-		while(atual->prox != NULL && strcmp(atual->prox->verbete, palavra) <= 0){
+		while(atual->prox != NULL && strcmp(atual->prox->verbete, palavra) < 0){
 			atual = atual->prox;
 		}
 
@@ -201,12 +200,16 @@ void impressao(lista *l, char inic){
 			atual = atual->baixo;
 	}
 
-	if(atual != NULL && strcmp(atual->verbete, palavra) == 0){
-		return atual;
+	atual = atual->prox;
+
+	if(atual->verbete[0] != inic){
+		printf("OPERACAO INVALIDA\n");
 	}
 
-	return NULL;
-	*/
+	while(atual != NULL && atual->verbete[0] == inic){
+		printf("%s %s\n", atual->verbete, atual->def);
+		atual = atual->prox;
+	}
 }
 
 void imprimir_lista(lista* l){
