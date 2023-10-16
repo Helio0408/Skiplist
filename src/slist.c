@@ -186,6 +186,8 @@ void liberar_camada(no *p){
 		return;
 
 	liberar_camada(p->prox);
+	if(p->def != NULL) free(p->def);
+	if(p->verbete != NULL) free(p->verbete);
 	free(p);
 }
 
