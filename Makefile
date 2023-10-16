@@ -1,5 +1,5 @@
 CXX=gcc
-CXXFLAGS=-Wall -Wextra -Werror -g
+CXXFLAGS=-Wall -Wextra -g
 EXEC=programa
 
 SRC_FOLDER=src
