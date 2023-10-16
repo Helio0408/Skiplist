@@ -184,7 +184,7 @@ void busca_definicao(lista* l, char palavra[]){
 		return;
 	}
 
-	printf("%s\n", res->def);
+	printf("%s %s\n", res->verbete, res->def);
 }
 
 void impressao(lista *l, char inic){
