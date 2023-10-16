@@ -49,14 +49,20 @@ int random_nvl(){
 }
 
 void insercao(lista *l, char palavra[], char def[]){
+	if(busca(l, palavra) != NULL){
+		printf("OPERACAO INVALIDA\n");
+		return;
+	}
+
 	no *update[num_niveis], *atual = l->upleft, *p, *new_upleft;
 
 	for(int i = 0; i < num_niveis; i++) update[i] = NULL;
 
 	int nvl_novo = random_nvl();
+	nvl_novo = 0;
 
 	for(int i = l->max_nvl; i >= 0; i--){
-		while(atual->prox != NULL && strcmp(atual->prox->verbete, palavra) <= 0){
+		while(atual->prox != NULL && strcmp(atual->prox->verbete, palavra) < 0){
 			atual = atual->prox;
 		}
 
@@ -66,10 +72,6 @@ void insercao(lista *l, char palavra[], char def[]){
 			atual = atual->baixo;
 	}
 
-	if(atual->verbete != NULL && strcmp(atual->verbete, palavra) == 0){
-		printf("OPERACAO INVALIDA\n");
-		return;
-	}
 	int curr_level = 0;
 
 	while(curr_level <= l->max_nvl && curr_level <= nvl_novo){
@@ -118,7 +120,42 @@ void alteracao(lista *l, char palavra[], char def[]){
 }
 
 void remocao(lista *l, char palavra[]){
+	if(busca(l, palavra) == NULL){
+		printf("OPERACAO INVALIDA\n");
+		return;
+	}
 
+	no *update[num_niveis], *atual = l->upleft, *old_atual = l->upleft, *p;
+	int curr_level = 0;
+
+	for(int i = 0; i < num_niveis; i++) update[i] = NULL;
+
+	for(int i = l->max_nvl; i >= 0; i--){
+		while(atual->prox != NULL && strcmp(atual->prox->verbete, palavra) < 0){
+			atual = atual->prox;
+		}
+
+		update[i] = atual;
+
+		if(i != 0 && atual->baixo != NULL)
+			atual = atual->baixo;
+	}
+
+	while(curr_level <= l->max_nvl){
+		p = update[curr_level]->prox;
+
+		update[curr_level]->prox = p->prox;
+		liberar_no(p);
+
+		curr_level++;
+	}
+
+	while(l->max_nvl != 0 && l->upleft->prox == NULL){
+		p = l->upleft;
+		l->upleft = l->upleft->baixo;
+		l->max_nvl--;
+		liberar_no(p);
+	}
 }
 
 no* busca(lista *l, char palavra[]){
@@ -191,15 +228,21 @@ void imprimir_lista(lista* l){
 	}
 }
 
+void liberar_no(no* p){
+	if(p == NULL) return;
+
+	if(p->def != NULL) free(p->def);
+	if(p->verbete != NULL) free(p->verbete);
+	free(p);
+}
+
 void liberar_camada(no *p){
 	if(p == NULL)
 		return;
 
 	liberar_camada(p->prox);
 
-	if(p->def != NULL) free(p->def);
-	if(p->verbete != NULL) free(p->verbete);
-	free(p);
+	liberar_no(p);
 }
 
 void liberar_lista(lista *l){

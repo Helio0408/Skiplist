@@ -48,6 +48,8 @@ void imprimir_lista(lista* l);
 libera toda uma camada da lista
 (não usar, apenas para uso recursivo em liber_lista)
 */
+void liberar_no(no* p);
+
 void liberar_camada(no *p);
 
 //libera toda a lista
