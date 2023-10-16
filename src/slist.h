@@ -28,8 +28,11 @@ void alteracao(lista *l, char palavra[], char def[]);
 //remove palavra do dicionário
 void remocao(lista *l, char palavra[]);
 
-//retorna o no da palavra, retorna NULL se não encontrar a palavra
+// retorna o no da palavra, caso não ache, retorna NULL
 no* busca(lista *l, char palavra[]);
+
+// busca e imprime a definição da palavra
+void busca_definicao(lista* l, char palavra[]);
 
 /* 
 imprime todas as palavras iniciadas pelo caractere inic seguidas por suas 
@@ -37,6 +40,9 @@ respectivas definições em ordem alfabética. Cada palavra (com sua respectiva
 definição) é impressa em uma linha diferente.
 */
 void impressao(lista *l, char inic);
+
+/* DEBUG */
+void imprimir_lista(lista* l);
 
 /*
 libera toda uma camada da lista

@@ -5,6 +5,7 @@ struct no_{
 	char *def;
 	no *prox;
 	no *baixo;
+	int nivel;
 };
 
 struct lista_{
@@ -17,16 +18,8 @@ lista* criar_lista(){
 	if(l == NULL)
 		exit(1);
 
-	l->max_nvl = 1;
-	l->upleft = (no*) malloc(sizeof(no));
-
-	if(l->upleft == NULL)
-		exit(1);
-
-	l->upleft->verbete = '\0';
-	l->upleft->def = '\0';
-	l->upleft->prox = NULL;
-	l->upleft->baixo = NULL;
+	l->max_nvl = 0;
+	l->upleft = criar_no("\0", "\0");
 
 	return l;
 }
@@ -35,8 +28,11 @@ no* criar_no(char palavra[], char def[]){
 	no *p;
 
 	p = (no*) malloc(sizeof(no));
-	p->verbete = palavra;
-	p->def = def;
+
+	p->verbete = (char*) malloc(strlen(palavra) + 1);
+	strcpy(p->verbete, palavra);
+	p->def = (char*) malloc(strlen(def) + 1);
+	strcpy(p->def, def);
 	p->prox = NULL;
 	p->baixo = NULL;
 
@@ -44,7 +40,7 @@ no* criar_no(char palavra[], char def[]){
 }
 
 int random_nvl(){
-	int nvl = 1;
+	int nvl = 0;
 
 	while((rand() % 2) < 1 && nvl < num_niveis)
 		nvl++;
@@ -53,52 +49,69 @@ int random_nvl(){
 }
 
 void insercao(lista *l, char palavra[], char def[]){
-	no *update[num_niveis], *atual = l->upleft, *p;
+	no *update[num_niveis], *atual = l->upleft, *p, *new_upleft;
+
+	for(int i = 0; i < num_niveis; i++) update[i] = NULL;
 
 	int nvl_novo = random_nvl();
 
-	for(int i = l->max_nvl - 1; i >= 0; i--){
-		while( atual->prox != NULL && strcmp(atual->prox->verbete, palavra) < 0)
+	for(int i = l->max_nvl; i >= 0; i--){
+		while(atual->prox != NULL && strcmp(atual->prox->verbete, palavra) <= 0){
 			atual = atual->prox;
+		}
 
 		update[i] = atual;
 
-		if(atual->baixo != NULL)
+		if(i != 0 && atual->baixo != NULL)
 			atual = atual->baixo;
 	}
 
-	if(strcmp(atual->verbete, palavra) == 0){
-		printf("OPERACAO INVALIDA");
+	if(atual->verbete != NULL && strcmp(atual->verbete, palavra) == 0){
+		printf("OPERACAO INVALIDA\n");
 		return;
 	}
+	//nvl_novo = 2;
+	int curr_level = 0;
+	//nvl_novo = 0;
 
-	if(l->max_nvl < nvl_novo){
-		for(int i = (l->max_nvl); i < nvl_novo; i++){
-			p = criar_no(palavra, def);
-			update[i] =  criar_no('\0', '\0');
-
-			update[i]->prox = p;
-			p->baixo = update[i-1]->prox;
-		}
-
-		l->upleft = update[nvl_novo - 1];
-
-		l->max_nvl = nvl_novo;
-	}
-
-	for(int i = 0; i < nvl_novo; i++){
+	while(curr_level <= l->max_nvl && curr_level <= nvl_novo){
 		p = criar_no(palavra, def);
 
-		p->prox = update[i]->prox;
-		update[i]->prox = p;
+		if(curr_level == 0){
+			//if(update[curr_level] != NULL)
+				p->prox = update[curr_level]->prox;
+			p->baixo = NULL;
+		}
+		else{
+			//if(update[curr_level] != NULL)
+				p->prox = update[curr_level]->prox;
+			//if(update[curr_level] != NULL)
+				p->baixo = update[curr_level - 1]->prox;
+		}
 
-		if(i > 0)
-			p->baixo = update[i-1]->prox;
+		//if(update[curr_level] != NULL)
+			update[curr_level]->prox = p;
+		curr_level++;
 	}
 
+	for(int i = (l->max_nvl) + 1; i <= nvl_novo; i++){
+		// prox e baixo
+		p = criar_no(palavra, def);
+		p->prox = NULL;
+		if(update[i - 1] != NULL) p->baixo = update[i - 1]->prox;
+
+		new_upleft = criar_no("\0", "\0");
+		new_upleft->prox = p;
+		new_upleft->baixo = l->upleft;
+
+		l->upleft = new_upleft;
+		update[i] = new_upleft;
+	}
+
+
+	if(nvl_novo > l->max_nvl) l->max_nvl = nvl_novo;
 }
 
-/*
 void alteracao(lista *l, char palavra[], char def[]){
 	no *temp;
 	
@@ -112,13 +125,57 @@ void remocao(lista *l, char palavra[]){
 }
 
 no* busca(lista *l, char palavra[]){
-	
+	no *atual = l->upleft;
+
+	for(int i = l->max_nvl; i >= 0; i--){
+		while(atual->prox != NULL && strcmp(atual->prox->verbete, palavra) <= 0){
+			atual = atual->prox;
+		}
+
+		if(i != 0 && atual->baixo != NULL)
+			atual = atual->baixo;
+	}
+
+	if(atual != NULL && strcmp(atual->verbete, palavra) == 0){
+		return atual;
+	}
+
+	return NULL;
+}
+
+void busca_definicao(lista* l, char palavra[]){
+	no* res = busca(l, palavra);
+
+	if(res == NULL){
+		printf("OPERACAO INVALIDA\n");
+		return;
+	}
+
+	printf("%s\n", res->def);
 }
 
 void impressao(lista *l, char inic){
 	
 }
-*/
+
+void imprimir_lista(lista* l){
+	no *atual = l->upleft;
+
+	for(int i = l->max_nvl; i >= 0; i--){
+		no* old_atual = atual;
+
+		while(1){
+			if(atual == NULL) break;
+
+			printf("%s ", atual->verbete);
+			atual = atual->prox;
+		}
+		printf("\n");
+
+		if(old_atual->baixo != NULL)
+			atual = old_atual->baixo;
+	}
+}
 
 void liberar_camada(no *p){
 	if(p == NULL)
