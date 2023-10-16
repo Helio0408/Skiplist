@@ -117,7 +117,11 @@ void alteracao(lista *l, char palavra[], char def[]){
 	
 	temp = busca(l, palavra);
 
-	temp->def = def;
+	if(temp->def != NULL)
+		free(temp->def);
+
+	temp->def = (char*) malloc(strlen(def) + 1);
+	strcpy(temp->def, def);
 }
 
 void remocao(lista *l, char palavra[]){
