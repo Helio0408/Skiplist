@@ -39,6 +39,9 @@ int main(){
 			scanf(" %c", &character);
 			impressao(l, character);
 		}
+		else if(!strcmp(cmd, "debug")){
+			imprimir_lista(l);
+		}
 	}
 
 	liberar_lista(l);
