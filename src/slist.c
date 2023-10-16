@@ -70,32 +70,25 @@ void insercao(lista *l, char palavra[], char def[]){
 		printf("OPERACAO INVALIDA\n");
 		return;
 	}
-	//nvl_novo = 2;
 	int curr_level = 0;
-	//nvl_novo = 0;
 
 	while(curr_level <= l->max_nvl && curr_level <= nvl_novo){
 		p = criar_no(palavra, def);
 
 		if(curr_level == 0){
-			//if(update[curr_level] != NULL)
-				p->prox = update[curr_level]->prox;
+			p->prox = update[curr_level]->prox;
 			p->baixo = NULL;
 		}
 		else{
-			//if(update[curr_level] != NULL)
-				p->prox = update[curr_level]->prox;
-			//if(update[curr_level] != NULL)
-				p->baixo = update[curr_level - 1]->prox;
+			p->prox = update[curr_level]->prox;
+			p->baixo = update[curr_level - 1]->prox;
 		}
 
-		//if(update[curr_level] != NULL)
-			update[curr_level]->prox = p;
+		update[curr_level]->prox = p;
 		curr_level++;
 	}
 
 	for(int i = (l->max_nvl) + 1; i <= nvl_novo; i++){
-		// prox e baixo
 		p = criar_no(palavra, def);
 		p->prox = NULL;
 		if(update[i - 1] != NULL) p->baixo = update[i - 1]->prox;
@@ -159,7 +152,24 @@ void busca_definicao(lista* l, char palavra[]){
 }
 
 void impressao(lista *l, char inic){
-	
+	/*
+	no *atual = l->upleft;
+
+	for(int i = l->max_nvl; i >= 0; i--){
+		while(atual->prox != NULL && strcmp(atual->prox->verbete, palavra) <= 0){
+			atual = atual->prox;
+		}
+
+		if(i != 0 && atual->baixo != NULL)
+			atual = atual->baixo;
+	}
+
+	if(atual != NULL && strcmp(atual->verbete, palavra) == 0){
+		return atual;
+	}
+
+	return NULL;
+	*/
 }
 
 void imprimir_lista(lista* l){
@@ -186,6 +196,7 @@ void liberar_camada(no *p){
 		return;
 
 	liberar_camada(p->prox);
+
 	if(p->def != NULL) free(p->def);
 	if(p->verbete != NULL) free(p->verbete);
 	free(p);
