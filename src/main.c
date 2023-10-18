@@ -1,3 +1,9 @@
+/*
+Trabalho por:
+Hélio Márcio Cabral Santos - NUSP: 14577862
+Gabriel Martins Monteiro - NUSP: 14572099
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "slist.h"
@@ -21,7 +27,7 @@ int main(){
 		else if(!strcmp(cmd, "insercao")){
 			scanf("%s ", verbete);
 			/* a função fgets é interessante nesse contexto pois ela
-			 * é capaz de ler strings com espaço */
+			   é capaz de ler strings com espaço */
 			fgets(definicao, tam_def, stdin);
 			definicao[strlen(definicao) - 2] = '\0'; // remover o '\n' que o fgets captura
 
