@@ -1,6 +1,6 @@
 #define tam_verb 120
 #define tam_def 240
-#define num_niveis 12
+#define num_niveis 4
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -25,7 +25,7 @@ int main(){
 			insercao(l, verbete, definicao);
 		}
 		else if(!strcmp(cmd, "alteracao")){
-			scanf("%s", verbete);
+			scanf("%s ", verbete);
 			fgets(definicao, tam_def + 1, stdin);
 			definicao[strlen(definicao) - 1] = '\0'; // remover o '\n' que o fgets captura
 
