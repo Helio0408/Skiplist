@@ -1,6 +1,6 @@
 #define tam_verb 61
 #define tam_def 182
-#define num_niveis 240
+#define num_niveis 20
 
 /* o tam_verb necessita 1 char a mais para acomodar o '\0'
  * o tam_def necessita 2 char a mais para acomodar o '\0' e o '\n' */
