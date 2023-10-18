@@ -28,10 +28,12 @@ no* criar_no(char palavra[], char def[]){
 
 	p = (no*) malloc(sizeof(no));
 
+	/* aloca o tamanho e copia a string */
 	p->verbete = (char*) malloc(strlen(palavra) + 1);
 	strcpy(p->verbete, palavra);
 	p->def = (char*) malloc(strlen(def) + 1);
 	strcpy(p->def, def);
+
 	p->prox = NULL;
 	p->baixo = NULL;
 
@@ -39,12 +41,12 @@ no* criar_no(char palavra[], char def[]){
 }
 
 int random_nvl(){
+	/* decide qual nível da lista será aumentado */
 	int nvl = 0;
 
 	while((rand() % 2) < 1 && nvl < num_niveis - 1)
 		nvl++;
 
-	//return 0;
 	return nvl;
 }
 
@@ -60,6 +62,7 @@ void insercao(lista *l, char palavra[], char def[]){
 
 	int nvl_novo = random_nvl();
 
+	/* procura onde deve ser inserido a próxima palavra */
 	for(int i = l->max_nvl; i >= 0; i--){
 		while(atual->prox != NULL && strcmp(atual->prox->verbete, palavra) < 0){
 			atual = atual->prox;
@@ -73,6 +76,7 @@ void insercao(lista *l, char palavra[], char def[]){
 
 	int curr_level = 0;
 
+	/* atualiza as listas onde for necessário */
 	while(curr_level <= l->max_nvl && curr_level <= nvl_novo){
 		p = criar_no(palavra, def);
 
@@ -103,13 +107,14 @@ void insercao(lista *l, char palavra[], char def[]){
 		update[i] = new_upleft;
 	}
 
-
+	/* atualiza o nível da lista se for necessário */
 	if(nvl_novo > l->max_nvl) l->max_nvl = nvl_novo;
 }
 
 void alteracao(lista *l, char palavra[], char def[]){
 	no *temp;
 	
+	/* busca a palavra na lista e altera a sua definição */
 	temp = busca(l, palavra);
 
 	if(temp == NULL){
@@ -120,6 +125,7 @@ void alteracao(lista *l, char palavra[], char def[]){
 	if(temp->def != NULL)
 		free(temp->def);
 
+	/* aloca o tamanho para a string e copia */
 	temp->def = (char*) malloc(strlen(def) + 1);
 	strcpy(temp->def, def);
 }
@@ -135,6 +141,7 @@ void remocao(lista *l, char palavra[]){
 
 	for(int i = 0; i < num_niveis; i++) update[i] = NULL;
 
+	/* procura a palavra a ser removida da lista */
 	for(int i = l->max_nvl; i >= 0; i--){
 		while(atual->prox != NULL && strcmp(atual->prox->verbete, palavra) < 0){
 			atual = atual->prox;
@@ -146,6 +153,7 @@ void remocao(lista *l, char palavra[]){
 			atual = atual->baixo;
 	}
 
+	/* remove e atualiza a lista */
 	while(curr_level <= l->max_nvl){
 		p = update[curr_level]->prox;
 		if(p == NULL){
@@ -157,7 +165,6 @@ void remocao(lista *l, char palavra[]){
 
 		curr_level++;
 	}
-
 
 	while(l->upleft->prox == NULL){
 		if(l->max_nvl == 0) break;
@@ -171,6 +178,7 @@ void remocao(lista *l, char palavra[]){
 no* busca(lista *l, char palavra[]){
 	no *atual = l->upleft;
 
+	/* busca a palavra na lista*/
 	for(int i = l->max_nvl; i >= 0; i--){
 		while(atual->prox != NULL && strcmp(atual->prox->verbete, palavra) <= 0){
 			atual = atual->prox;
@@ -180,6 +188,7 @@ no* busca(lista *l, char palavra[]){
 			atual = atual->baixo;
 	}
 
+	/* retorna somente se a palavra foi encontrada */
 	if(atual != NULL && strcmp(atual->verbete, palavra) == 0){
 		return atual;
 	}
@@ -202,6 +211,9 @@ void impressao(lista *l, char inic){
 	no *atual = l->upleft;
 	char palavra[2] = {inic, '\0'};
 
+	/* aqui, o programa procura onde deve ser inserido a palavra que possui
+	 * apenas o caracter inicial dado.
+	 * Dessa forma, ele acha exatamente a primeira palavra que começa com a inicial */
 	for(int i = l->max_nvl; i >= 0; i--){
 		while(atual->prox != NULL && strcmp(atual->prox->verbete, palavra) < 0){
 			atual = atual->prox;
@@ -217,28 +229,11 @@ void impressao(lista *l, char inic){
 		printf("OPERACAO INVALIDA\r\n");
 	}
 
+	/* a partir daqui, basta iterar na lista enquanto que a palavra seja da inicial
+	 * dada */
 	while(atual != NULL && atual->verbete[0] == inic){
 		printf("%s %s\n", atual->verbete, atual->def);
 		atual = atual->prox;
-	}
-}
-
-void imprimir_lista(lista* l){
-	no *atual = l->upleft;
-
-	for(int i = l->max_nvl; i >= 0; i--){
-		no* old_atual = atual;
-
-		while(1){
-			if(atual == NULL) break;
-
-			printf("%s ", atual->verbete);
-			atual = atual->prox;
-		}
-		printf("\n");
-
-		if(old_atual->baixo != NULL)
-			atual = old_atual->baixo;
 	}
 }
 
@@ -254,6 +249,7 @@ void liberar_camada(no *p){
 	if(p == NULL)
 		return;
 
+	/* utiliza-se função recursiva para liberar as camadas */
 	liberar_camada(p->prox);
 
 	liberar_no(p);

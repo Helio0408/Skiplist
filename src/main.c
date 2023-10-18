@@ -12,6 +12,7 @@ int main(){
 	char character;
 	l = criar_lista();
 
+	/* enquanto o usuário ainda digitar, continuamos lendo seus inputs */
 	while(scanf("%s", cmd) == 1){
 		if(!strcmp(cmd, "busca")){
 			scanf("%s", verbete);
@@ -19,6 +20,8 @@ int main(){
 		}
 		else if(!strcmp(cmd, "insercao")){
 			scanf("%s ", verbete);
+			/* a função fgets é interessante nesse contexto pois ela
+			 * é capaz de ler strings com espaço */
 			fgets(definicao, tam_def, stdin);
 			definicao[strlen(definicao) - 2] = '\0'; // remover o '\n' que o fgets captura
 
@@ -38,9 +41,6 @@ int main(){
 		else if(!strcmp(cmd, "impressao")){
 			scanf(" %c", &character);
 			impressao(l, character);
-		}
-		else if(!strcmp(cmd, "debug")){
-			imprimir_lista(l);
 		}
 	}
 

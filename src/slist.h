@@ -2,6 +2,9 @@
 #define tam_def 182
 #define num_niveis 240
 
+/* o tam_verb necessita 1 char a mais para acomodar o '\0'
+ * o tam_def necessita 2 char a mais para acomodar o '\0' e o '\n' */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,9 +43,6 @@ respectivas definições em ordem alfabética. Cada palavra (com sua respectiva
 definição) é impressa em uma linha diferente.
 */
 void impressao(lista *l, char inic);
-
-/* DEBUG */
-void imprimir_lista(lista* l);
 
 /*
 libera toda uma camada da lista
