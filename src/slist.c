@@ -5,7 +5,6 @@ struct no_{
 	char *def;
 	no *prox;
 	no *baixo;
-	int nivel;
 };
 
 struct lista_{
@@ -42,7 +41,7 @@ no* criar_no(char palavra[], char def[]){
 int random_nvl(){
 	int nvl = 0;
 
-	while((rand() % 2) < 1 && nvl < num_niveis)
+	while((rand() % 2) < 1 && nvl < num_niveis - 1)
 		nvl++;
 
 	return nvl;
@@ -89,9 +88,10 @@ void insercao(lista *l, char palavra[], char def[]){
 		curr_level++;
 	}
 
-	for(int i = (l->max_nvl) + 1; i <= nvl_novo; i++){
+	for(int i = l->max_nvl + 1; i <= nvl_novo; i++){
 		p = criar_no(palavra, def);
 		p->prox = NULL;
+		p->baixo = NULL;
 		if(update[i - 1] != NULL) p->baixo = update[i - 1]->prox;
 
 		new_upleft = criar_no("\0", "\0");
@@ -147,16 +147,19 @@ void remocao(lista *l, char palavra[]){
 
 	while(curr_level <= l->max_nvl){
 		p = update[curr_level]->prox;
-
 		update[curr_level]->prox = p->prox;
 		liberar_no(p);
 
 		curr_level++;
 	}
 
-	while(l->max_nvl != 0 && l->upleft->prox == NULL){
+
+	while(l->upleft->prox == NULL){
+		if(l->max_nvl == 0) break;
 		p = l->upleft;
-		if(l->upleft->baixo != NULL) l->upleft = l->upleft->baixo;
+		if(l->upleft->baixo != NULL){
+			l->upleft = l->upleft->baixo;
+		}
 		l->max_nvl--;
 		liberar_no(p);
 	}
@@ -189,7 +192,7 @@ void busca_definicao(lista* l, char palavra[]){
 		return;
 	}
 
-	printf("%s %s\n", res->verbete, res->def);
+	printf("%s %s\r\n", res->verbete, res->def);
 }
 
 void impressao(lista *l, char inic){
@@ -208,11 +211,11 @@ void impressao(lista *l, char inic){
 	atual = atual->prox;
 
 	if(atual->verbete[0] != inic){
-		printf("OPERACAO INVALIDA\n");
+		printf("OPERACAO INVALIDA\r\n");
 	}
 
 	while(atual != NULL && atual->verbete[0] == inic){
-		printf("%s %s\n", atual->verbete, atual->def);
+		printf("%s %s\r\n", atual->verbete, atual->def);
 		atual = atual->prox;
 	}
 }
